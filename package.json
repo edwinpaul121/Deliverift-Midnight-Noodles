@@ -1,0 +1,16 @@
+{
+  "name": "midnight-noodles",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A late-shift noodle delivery and drift game set in the city of Han.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "npm run build && npx --yes serve dist -l 5173",
+    "test": "node tests/run.cjs",
+    "models:compress": "gltf-transform optimize public/models/IN.glb public/models/OUT.glb --texture-size 1024 --compress draco"
+  },
+  "devDependencies": {
+    "three": "0.128.0"
+  }
+}
