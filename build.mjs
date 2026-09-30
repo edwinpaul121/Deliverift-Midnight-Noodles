@@ -18,13 +18,8 @@ mkdirSync(join(OUT, 'vendor'), { recursive: true });
 
 let shell = readFileSync(join(SRC, 'shell.html'), 'utf8');
 
-// 1. lift the stylesheet out of the shell
-const styleAt = shell.indexOf('<style>');
-const styleEnd = shell.indexOf('</style>');
-if (styleAt < 0 || styleEnd < 0) throw new Error('no <style> block in shell.html');
-const css = shell.slice(styleAt + 7, styleEnd);
-shell = shell.slice(0, styleAt) + '<link rel="stylesheet" href="styles.css">' + shell.slice(styleEnd + 8);
-writeFileSync(join(OUT, 'styles.css'), css.trim() + '\n');
+// 1. the stylesheet
+cpSync(join(SRC, 'styles.css'), join(OUT, 'styles.css'));
 
 // 2. concatenate the game source
 const js = parts.map(f => readFileSync(join(SRC, f), 'utf8')).join('\n');
