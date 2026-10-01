@@ -677,20 +677,68 @@ function buildTextures() {
    glass read as reflective surfaces instead of flat plastic. */
 let ENV = null;
 function buildEnvMap() {
-  const W = 512, H = 256;
+  const W = 1024, H = 512;
   const c = cnv(W, H), x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0.00, '#1d3f74');
-  g.addColorStop(0.34, '#6fa3cf');
-  g.addColorStop(0.48, '#cfe0ea');
-  g.addColorStop(0.52, '#f3d9b0');
-  g.addColorStop(0.62, '#8a8674');
-  g.addColorStop(1.00, '#3c3a33');
-  x.fillStyle = g; x.fillRect(0, 0, W, H);
-  const sg = x.createRadialGradient(W * 0.22, H * 0.42, 4, W * 0.22, H * 0.42, 90);
-  sg.addColorStop(0, 'rgba(255,244,214,1)');
-  sg.addColorStop(1, 'rgba(255,214,150,0)');
-  x.fillStyle = sg; x.fillRect(0, 0, W, H);
+  g.addColorStop(0.00, '#16325f');
+  g.addColorStop(0.30, '#5f97c8');
+  g.addColorStop(0.46, '#cfe0ea');
+  g.addColorStop(0.50, '#f6e2bd');
+  g.addColorStop(0.53, '#6d6a5e');
+  g.addColorStop(0.72, '#4a4840');
+  g.addColorStop(1.00, '#26251f');
+  x.fillStyle = g;
+  x.fillRect(0, 0, W, H);
+
+  // Cloud banks and a bright sun. A flat gradient gives a glossy surface
+  // nothing to reflect, so paint slides over it without any sense of shine;
+  // broken cloud is what makes highlights travel across a panel.
+  for (let i = 0; i < 26; i++) {
+    const cx = Math.random() * W;
+    const cy = H * (0.06 + Math.random() * 0.34);
+    const rw = 60 + Math.random() * 190;
+    const rh = rw * (0.16 + Math.random() * 0.14);
+    const alpha = 0.10 + Math.random() * 0.30;
+    const cg = x.createRadialGradient(cx, cy, 0, cx, cy, rw);
+    cg.addColorStop(0, 'rgba(255,255,255,' + alpha.toFixed(3) + ')');
+    cg.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = cg;
+    x.save();
+    x.translate(cx, cy);
+    x.scale(1, rh / rw);
+    x.beginPath();
+    x.arc(0, 0, rw, 0, TAU);
+    x.fill();
+    x.restore();
+  }
+
+  const sx = W * 0.22, sy = H * 0.30;
+  const sg = x.createRadialGradient(sx, sy, 2, sx, sy, 150);
+  sg.addColorStop(0.00, 'rgba(255,250,228,1)');
+  sg.addColorStop(0.18, 'rgba(255,240,198,0.75)');
+  sg.addColorStop(1.00, 'rgba(255,214,150,0)');
+  x.fillStyle = sg;
+  x.fillRect(0, 0, W, H);
+
+  // a hard horizon: the line a car's flanks catch as it turns
+  x.fillStyle = 'rgba(255,246,222,0.55)';
+  x.fillRect(0, H * 0.497, W, 3);
+
+  // broken ground tone below, so the lower body is not reflecting a flat wash
+  for (let i = 0; i < 40; i++) {
+    const bx = Math.random() * W;
+    const by = H * (0.55 + Math.random() * 0.42);
+    const r = 40 + Math.random() * 130;
+    const bg = x.createRadialGradient(bx, by, 0, bx, by, r);
+    const shade = Math.random() < 0.5 ? '90,86,74' : '42,40,34';
+    bg.addColorStop(0, 'rgba(' + shade + ',0.30)');
+    bg.addColorStop(1, 'rgba(' + shade + ',0)');
+    x.fillStyle = bg;
+    x.beginPath();
+    x.arc(bx, by, r, 0, TAU);
+    x.fill();
+  }
+
   const t = new THREE.CanvasTexture(c);
   t.mapping = THREE.EquirectangularReflectionMapping;
   ENV = t;

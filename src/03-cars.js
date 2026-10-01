@@ -377,6 +377,21 @@ function preciseBox(obj, target) {
   return box;
 }
 
+/* Car paint is a clearcoat over pigment, not metal. Metalness tints reflections
+   with the base colour and drops the diffuse term, which reads as brushed
+   metal; a dielectric surface with low roughness reflects the sky cleanly and
+   keeps its own colour. */
+function paintFinish(mat, cz) {
+  const matte = cz.finish === 'matte', pearl = cz.finish === 'pearl';
+  mat.color = new THREE.Color(cz.body);
+  mat.metalness = matte ? 0.04 : (pearl ? 0.22 : 0.06);
+  mat.roughness = matte ? 0.55 : (pearl ? 0.13 : 0.08);
+  mat.envMap = ENV;
+  mat.envMapIntensity = matte ? 0.55 : (pearl ? 2.0 : 1.7);
+  mat.needsUpdate = true;
+  return mat;
+}
+
 /* Rim spokes, hub caps and brake detail are often named nothing like a wheel,
    so they stay on the body and sit still while the tyre turns. Anything left
    over that lies inside a wheel is claimed by it. */
@@ -768,7 +783,8 @@ function applyGarageToModel(g, model, spec, cz, wheels, info) {
   // ---- wing: only when one is chosen; "auto" leaves the car's own ----
   if (cz.wing === 'gt' || cz.wing === 'duck' || cz.wing === 'lip') {
     const trim = new THREE.MeshStandardMaterial({ color: 0x24262b, roughness: 0.42, metalness: 0.5, envMap: ENV });
-    const paint = new THREE.MeshStandardMaterial({ color: cz.body, roughness: 0.26, metalness: 0.5, envMap: ENV });
+    // const paint = new THREE.MeshStandardMaterial({ color: cz.body, roughness: 0.26, metalness: 0.5, envMap: ENV });
+    const paint = paintFinish(new THREE.MeshStandardMaterial({}), cz);
     const wingG = new THREE.Group();
     const W = size.x * 0.96, rear = bb.min.z + 0.22 * scale;
     if (cz.wing === 'gt') {
@@ -1060,10 +1076,7 @@ function adaptCarModel(source, spec, cz, cfg) {
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     mats.forEach(mm => {
       if (paintRe.test((mm.name || '') + ' ' + (o.name || ''))) {
-        mm.color = new THREE.Color(cz.body);
-        mm.metalness = cz.finish === 'matte' ? 0.1 : 0.55;
-        mm.roughness = cz.finish === 'matte' ? 0.62 : (cz.finish === 'pearl' ? 0.16 : 0.26);
-        mm.needsUpdate = true;
+        paintFinish(mm, cz);
         painted++;
       }
     });
@@ -1080,10 +1093,7 @@ function adaptCarModel(source, spec, cz, cfg) {
       if (t > bestTris) { bestTris = t; best = o.material; }
     });
     if (best) {
-      best.color = new THREE.Color(cz.body);
-      best.metalness = cz.finish === 'matte' ? 0.1 : 0.55;
-      best.roughness = cz.finish === 'matte' ? 0.62 : (cz.finish === 'pearl' ? 0.16 : 0.26);
-      best.needsUpdate = true;
+      paintFinish(best, cz);
       painted = 1;
       info.notes.push('paint applied to the largest body panel');
     }
@@ -1146,10 +1156,9 @@ function buildCarMesh(spec, cz) {
   const s = spec.shape;
   const g = new THREE.Group();
   const paint = new THREE.MeshStandardMaterial({
-    color: cz.body, roughness: cz.finish === 'matte' ? 0.62 : (cz.finish === 'pearl' ? 0.16 : 0.24),
-    metalness: cz.finish === 'matte' ? 0.1 : (cz.finish === 'pearl' ? 0.6 : 0.45),
-    envMap: ENV, envMapIntensity: cz.finish === 'matte' ? 0.5 : 1.15
+        color: cz.body
   });
+  paintFinish(paint, cz);
   const glass = new THREE.MeshStandardMaterial({ color: 0x18202c, roughness: 0.06, metalness: 0.85,
     envMap: ENV, envMapIntensity: 1.5, transparent: true, opacity: 0.82 });
   const trim = new THREE.MeshStandardMaterial({ color: 0x14161a, roughness: 0.85 });
