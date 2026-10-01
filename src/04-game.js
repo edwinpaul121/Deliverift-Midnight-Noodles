@@ -328,6 +328,7 @@ function refreshDash() {
 
 /* drift readout */
 function updateDrift(dt) {
+  const DRIFT_CHAIN_WINDOW = 7;
   const sp = Math.hypot(V.vx, V.vz);
   const drifting = V.slip > 0.19 && sp > 7.5 && !V.airborne;
   if (drifting) {
@@ -340,7 +341,7 @@ function updateDrift(dt) {
     S.lastDrift = 0;
   } else {
     S.lastDrift += dt;
-    if (S.lastDrift > 0.85 && S.driftBank > 0) bankChain();
+    if (S.lastDrift > DRIFT_CHAIN_WINDOW && S.driftBank > 0) bankChain();
   }
   const el = $('drift');
   const show = drifting || S.driftBank > 0;
