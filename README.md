@@ -14,7 +14,9 @@ buildings and every texture are generated in code when the page loads.
 
 This code was built with the assistance of AI so do keep in mind the faults.
 
-![gameplay](docs/screenshot.png)
+![Game Snapshot 1](docs/screenshot1.png)
+![Game Snapshot 1](docs/screenshot2.png)
+![Game Snapshot 1](docs/screenshot3.png)
 
 ## Playing
 
