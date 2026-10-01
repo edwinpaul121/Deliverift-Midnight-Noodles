@@ -18,6 +18,10 @@ This code was built with the assistance of AI so do keep in mind the faults.
 ![Game Snapshot 1](docs/screenshot2.png)
 ![Game Snapshot 1](docs/screenshot3.png)
 
+## Requirements
+- Node18 or newer
+- Browser with WebGL2
+
 ## Playing
 
 - **WASD / arrows** drive · **Space** handbrake · **Shift** clutch
@@ -38,9 +42,7 @@ npm run dev      # builds, then serves dist/ at http://localhost:5173
 npm test         # the test suite: physics, geometry, progression, timing
 ```
 
-Put the car models in `public/models/` before building — see
-[public/models/README.md](public/models/README.md). The game runs without them
-and falls back to built-in bodywork.
+Game has a base car build that runs in case of load failure or non-existing models of vehicles. Make sure [public/models](public/models) contains glb files of the cars.
 
 ## Layout
 
@@ -72,5 +74,4 @@ files — mesh orientation, model fitting, garage options.
 ## Licence and credits
 
 Code is MIT (see [LICENSE](LICENSE)). **The 3D models are not mine and carry
-their own licences — read [CREDITS.md](CREDITS.md) before publishing this
-anywhere.** Security notes are in [SECURITY.md](SECURITY.md).
+their own licences — read [CREDITS.md](CREDITS.md).** 
