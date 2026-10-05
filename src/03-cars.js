@@ -125,7 +125,7 @@ const MODEL_CREDITS = [
   { file: 'car-halcyon-v10.glb',     subject: '2012 Lexus LFA Nurburgring Package',
     artist: 'Ddiaz Design', licence: 'CC BY-NC-SA 4.0', url: 'https://skfb.ly/prwLy' },
   { file: 'roads-tileset.glb',       subject: 'Roads & bridges tileset pack',
-    artist: '', licence: '', url: '' }
+    artist: 'MRowa', licence: 'CC BY-SA 4.0', url: 'https://skfb.ly/6T8oD' }
 ];
 
 /* Software the game is built on, credited the same way. */
