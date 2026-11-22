@@ -1,5 +1,7 @@
 # Midnight Noodles
 
+[Demo](https://deliverift.vercel.app/)
+
 A late-shift noodle delivery game set in the city of Han. Drive a hot tray
 across town before it goes cold, drift for the money, and take the mountain
 road up to Fox Mountain when you want to stop working and set a lap time.
